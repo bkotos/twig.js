@@ -316,7 +316,7 @@ describe("Twig.js Functions ->", function() {
         });
 
         describe("source ->", function() {
-            it("should load the non-compiled template source", function() {
+            it("should load the non-compiled template source code", function() {
                 twig({data: '{{ source("templates/source.twig") }}'})
                   .render()
                   .should
