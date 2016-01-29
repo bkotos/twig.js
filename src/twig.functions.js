@@ -8,6 +8,13 @@
 // This file handles parsing filters.
 var Twig = (function (Twig) {
 
+    // Create a 'FileNotFoundException' that extends javascript's native Error object
+    FileNotFoundException.prototype = Object.create(Error.prototype);
+    FileNotFoundException.prototype.constructor = Error;
+    function FileNotFoundException() {
+        Error.constructor.apply(this, arguments);
+    }
+
     // Determine object type
     function is(type, obj) {
         var clas = Object.prototype.toString.call(obj).slice(8, -1);
@@ -232,6 +239,45 @@ var Twig = (function (Twig) {
             }
 
             return getRandomNumber(LIMIT_INT31-1);
+        },
+
+        /**
+         *
+         * @param {string} name
+         * @param {boolean|undefined} ignore_missing
+         * @returns {string}
+         * @throws {FileNotFoundException}
+         */
+        source: function(name, ignore_missing) {
+            //default ignore_missing to true
+            if(typeof ignore_missing === "undefined") {
+                ignore_missing = true;
+            }
+
+            var content;
+
+            //if we are executing in a nodejs environment, use the fs module to read the template synchronously
+            //else, make a synchronous http request
+            if (typeof module !== "undefined" && module.exports) {
+                var fs = require("fs");
+                try {
+                    content = fs.readFileSync(name, "utf8");
+                } catch (e) {
+                    throw new FileNotFoundException();
+                }
+            } else {
+                var request = new XMLHttpRequest();
+                request.open("get", name, false);
+                request.send();
+
+                if (request.status === 200) {
+                    content = request.responseText;
+                } else if (!ignore_missing) {
+                    throw new FileNotFoundException();
+                }
+            }
+
+            return content;
         }
     };
 
