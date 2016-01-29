@@ -311,7 +311,7 @@ describe("Twig.js Functions ->", function() {
             it("should support the 'max' function", function() {
                 twig({data: '{{ max([2, 1, 3, 5, 4]) }}'}).render().should.equal('5');
                 twig({data: '{{ max(2, 1, 3, 5, 4) }}'}).render().should.equal('5');
-                twig({data: '{{ source("") }}'}).render().should.equal('two');
+                twig({data: '{{ max({2:"two", 1:"one", 3:"three", 5:"five", 4:"four"}) }}'}).render().should.equal('two');
             });
         });
 
