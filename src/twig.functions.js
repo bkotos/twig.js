@@ -7,6 +7,9 @@
 //
 // This file handles parsing filters.
 var Twig = (function (Twig) {
+    /**
+     * @constant {string}
+     */
     var TEMPLATE_NOT_FOUND_MESSAGE = 'Template "{name}" is not defined.';
 
     // Determine object type
