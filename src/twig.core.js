@@ -913,14 +913,19 @@ var Twig = (function (Twig) {
      *
      */
     Twig.Templates.loadRemote = function(location, params, callback, error_callback) {
-        var id          = params.id,
-            method      = params.method,
-            async       = params.async,
-            precompiled = params.precompiled,
-            template    = null;
+        var id                  = params.id,
+            method              = params.method,
+            async               = params.async,
+            precompiled         = params.precompiled,
+            fetchTemplateSource = params.fetchTemplateSource,
+            template            = null,
+            templateSource      = null;
 
         // Default to async
         if (async === undefined) async = true;
+
+        // Default to fetching the compiled template, rather than the template source
+        if (fetchTemplateSource === undefined) fetchTemplateSource = false;
 
         // Default to the URL so the template is cached.
         if (id === undefined) {
@@ -960,10 +965,18 @@ var Twig = (function (Twig) {
                         params.url = location;
                         params.data = data;
 
-                        template = new Twig.Template(params);
+                        if (fetchTemplateSource === true) {
+                            templateSource = data;
+                        } else {
+                            template = new Twig.Template(params);
+                        }
 
                         if (callback) {
-                            callback(template);
+                            if (fetchTemplateSource === true) {
+                                callback(templateSource);
+                            } else {
+                                callback(template);
+                            }
                         }
                     } else {
                         if (error_callback) {
@@ -997,10 +1010,18 @@ var Twig = (function (Twig) {
                         params.path = location;
 
                         // template is in data
-                        template = new Twig.Template(params);
+                        if (fetchTemplateSource === true) {
+                            templateSource = data;
+                        } else {
+                            template = new Twig.Template(params);
+                        }
 
                         if (callback) {
-                            callback(template);
+                            if (fetchTemplateSource === true) {
+                                callback(templateSource);
+                            } else {
+                                callback(template);
+                            }
                         }
                     };
 
@@ -1021,7 +1042,11 @@ var Twig = (function (Twig) {
             })();
         }
         if (async === false) {
-            return template;
+            if (fetchTemplateSource === true) {
+                return templateSource;
+            } else {
+                return template;
+            }
         } else {
             // placeholder for now, should eventually return a deferred object.
             return true;

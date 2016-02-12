@@ -7,13 +7,7 @@
 //
 // This file handles parsing filters.
 var Twig = (function (Twig) {
-
-    // Create a 'FileNotFoundException' that extends javascript's native Error object
-    FileNotFoundException.prototype = Object.create(Error.prototype);
-    FileNotFoundException.prototype.constructor = Error;
-    function FileNotFoundException() {
-        Error.constructor.apply(this, arguments);
-    }
+    var TEMPLATE_NOT_FOUND_MESSAGE = 'Template "{name}" is not defined.';
 
     // Determine object type
     function is(type, obj) {
@@ -242,42 +236,54 @@ var Twig = (function (Twig) {
         },
 
         /**
-         *
+         * Returns the content of a template without rendering it
          * @param {string} name
-         * @param {boolean|undefined} ignore_missing
+         * @param {boolean} [ignore_missing=true]
          * @returns {string}
-         * @throws {FileNotFoundException}
          */
         source: function(name, ignore_missing) {
+            var templateSource;
+            var templateFound = false;
+            var options = {
+                id: 'templates/source.twig',
+                method: 'ajax',
+                async: false,
+                fetchTemplateSource: true
+            };
+
             //default ignore_missing to true
-            if(typeof ignore_missing === "undefined") {
+            if (typeof ignore_missing === 'undefined') {
                 ignore_missing = true;
             }
 
-            var content;
+            //try to load the remote template
+            //
+            //on exception, log it
+            try {
+                templateSource = Twig.Templates.loadRemote(name, options);
 
-            //if we are executing in a nodejs environment, use the fs module to read the template synchronously
-            //else, make a synchronous http request
-            if (typeof module !== "undefined" && module.exports) {
-                var fs = require("fs");
-                try {
-                    content = fs.readFileSync(name, "utf8");
-                } catch (e) {
-                    throw new FileNotFoundException();
+                //if the template is null, set the template to an empty string and do NOT flip the
+                // boolean indicating we found the template
+                //
+                //else, all is good! flip the boolean indicating we found the template
+                if (templateSource === null) {
+                    templateSource = '';
+                } else {
+                    templateFound = true;
                 }
-            } else {
-                var request = new XMLHttpRequest();
-                request.open("get", name, false);
-                request.send();
-
-                if (request.status === 200) {
-                    content = request.responseText;
-                } else if (!ignore_missing) {
-                    throw new FileNotFoundException();
-                }
+            } catch (e) {
+                Twig.log.debug('Twig.functions.source: ', 'Problem loading template  ', e);
             }
 
-            return content;
+            //if the template was NOT found AND we are not ignoring missing templates, return the same message
+            // that is returned by the PHP implementation of the twig source() function
+            //
+            //else, return the template source
+            if (!templateFound && !ignore_missing) {
+                return TEMPLATE_NOT_FOUND_MESSAGE.replace('{name}', name);
+            } else {
+                return templateSource;
+            }
         }
     };
 
