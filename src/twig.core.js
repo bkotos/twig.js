@@ -905,6 +905,9 @@ var Twig = (function (Twig) {
      *                      (fs or ajax)
      *      precompiled: Has the template already been compiled.
      *
+     *      fetchTemplateSource: Return the raw template source rather than a compiled
+     *                      copy of the template.  Defaults to false.
+     *
      * @param {string} location  The remote URL to load as a template.
      * @param {Object} params The template parameters.
      * @param {function} callback  A callback triggered when the template finishes loading.
