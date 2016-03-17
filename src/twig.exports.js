@@ -43,7 +43,7 @@ var Twig = (function (Twig) {
         }
 
         if (params.data !== undefined) {
-            return new Twig.Template({
+            return Twig.Templates.parsers.twig({
                 data: params.data,
                 path: params.hasOwnProperty('path') ? params.path : undefined,
                 module: params.module,
