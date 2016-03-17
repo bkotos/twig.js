@@ -248,19 +248,25 @@ var Twig = (function (Twig) {
         source: function(name, ignore_missing) {
             var templateSource;
             var templateFound = false;
-            var isNodeEnvironment = typeof module !== 'undefined' && typeof module.exports !== 'undefined';
+            var isNodeEnvironment = typeof module !== 'undefined' && typeof module.exports !== 'undefined' && typeof window === 'undefined';
+            var loader;
+            var path;
 
-            //default the loader to 'ajax'
-            var loader = 'ajax';
-
-            //if we are running in a node.js environment, switch the loader to 'fs'
+            //if we are running in a node.js environment, set the loader to 'fs' and ensure the
+            // path is relative to the CWD of the running script
+            //else, set the loader to 'ajax' and set the path to the value of name
             if (isNodeEnvironment) {
                 loader = 'fs';
+                path = __dirname + '/' + name;
+            } else {
+                loader = 'ajax';
+                path = name;
             }
 
             //build the params object
             var params = {
                 id: name,
+                path: path,
                 method: loader,
                 parser: 'source',
                 async: false,

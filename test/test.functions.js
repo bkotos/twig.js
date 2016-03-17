@@ -319,7 +319,7 @@ describe("Twig.js Functions ->", function() {
 
         describe("source ->", function() {
             it("should load the non-compiled template source code", function() {
-                twig({data: '{{ source("test/templates/source.twig") }}'})
+                twig({data: '{{ source("/test/templates/source.twig") }}'})
                     .render()
                     .should
                     .equal('{% if isUserNew == true %}\n    Hello {{ name }}\n{% else %}\n    Welcome back {{ name }}\n{% endif %}\n')
