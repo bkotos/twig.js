@@ -2,7 +2,6 @@ var Twig = Twig || require("../twig"),
     twig = twig || Twig.twig;
 
 describe("Twig.js Parsers ->", function() {
-    // Encodings
     describe("custom parser ->", function() {
         it("should define a custom parser", function() {
             Twig.extend(function(Twig) {
