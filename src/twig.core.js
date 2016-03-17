@@ -959,7 +959,7 @@ var Twig = (function (Twig) {
      *    });
      * });
      *
-     * @param {String} method_name The method this parser is intended for (twig, raw)
+     * @param {String} method_name The method this parser is intended for (twig, source)
      * @param {Function} func The function to execute when parsing the template
      * @param {Object|undefined} scope Optional scope parameter to bind func to
      *
@@ -1000,7 +1000,7 @@ var Twig = (function (Twig) {
      * @return {boolean}
      */
     Twig.Templates.isRegisteredParser = function(method_name) {
-        return this.loaders.hasOwnProperty(method_name);
+        return this.parsers.hasOwnProperty(method_name);
     };
 
     /**
@@ -1034,13 +1034,13 @@ var Twig = (function (Twig) {
      *
      * Available parameters:
      *
-     *      async:         Should the HTTP request be performed asynchronously.
+     *      async:       Should the HTTP request be performed asynchronously.
      *                        Defaults to true.
-     *      method:        What method should be used to load the template
+     *      method:      What method should be used to load the template
      *                        (fs or ajax)
-     *      parser_method: What method should be used to parse the template
-     *                        (twig or raw)
-     *      precompiled:   Has the template already been compiled.
+     *      parser:      What method should be used to parse the template
+     *                        (twig or source)
+     *      precompiled: Has the template already been compiled.
      *
      * @param {string} location  The remote URL to load as a template.
      * @param {Object} params The template parameters.

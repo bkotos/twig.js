@@ -10,7 +10,7 @@ describe("Twig.js Parsers ->", function() {
                     return '[CUSTOM PARSER] ' + params.data;
                 };
 
-                Twig.Templates.registerParser('custom', obj.loader, obj);
+                Twig.Templates.registerParser('custom', parser);
                 Twig.Templates.parsers.should.have.property('custom');
             });
         });
@@ -20,9 +20,9 @@ describe("Twig.js Parsers ->", function() {
                 var params = {
                     data: 'This is a test template.'
                 };
-                var template = Twig.templates.parsers.custom(params);
+                var template = Twig.Templates.parsers.custom(params);
 
-                template.should.equal('[CUSTOM PARSER] This is a tes template.');
+                template.should.equal('[CUSTOM PARSER] This is a test template.');
             });
         });
 

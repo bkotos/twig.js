@@ -15,7 +15,7 @@
         var template,
             data = null,
             precompiled = params.precompiled,
-            parser = this.parsers[params.parser_method] || this.parser.twig;
+            parser = this.parsers[params.parser] || this.parser.twig;
 
         if (!fs || !path) {
             throw new Twig.Error('Unsupported platform: Unable to load from file ' +

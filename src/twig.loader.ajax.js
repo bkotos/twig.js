@@ -6,7 +6,7 @@
         var template,
             xmlhttp,
             precompiled = params.precompiled,
-            parser = this.parsers[params.parser_method] || this.parser.twig;
+            parser = this.parsers[params.parser] || this.parser.twig;
 
         if (typeof XMLHttpRequest === "undefined") {
             throw new Twig.Error('Unsupported platform: Unable to do ajax requests ' +
